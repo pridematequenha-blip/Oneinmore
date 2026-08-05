@@ -1,12 +1,3 @@
-<!DOCTYPE html>
-<html lang="pt">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Início - Library</title>
-  <link rel="stylesheet" href="../css/home.css">
-</head>
-<body>
 <main class="home-page">
   <header class="home-header">
     <h1>Início</h1>
@@ -21,21 +12,7 @@
       <h2>Aqui vai ter atualizações</h2>
       <p>Novidades, livros e muito mais<br>em um só lugar.</p>
     </div>
-    <!-- Substituímos os emojis por um carrossel de imagens aleatórias -->
-    <div class="banner-art">
-      <div class="carousel" id="bannerCarousel" tabindex="0" role="region" aria-label="Carrossel de imagens do banner">
-        <button class="carousel-btn prev" id="carouselPrev" aria-label="Anterior">‹</button>
-        <div class="carousel-track" id="carouselTrack">
-          <!-- imagens aleatórias via picsum.photos (seed para estabilidade entre reloads) -->
-          <img src="https://picsum.photos/seed/1/600/360" alt="Imagem 1" />
-          <img src="https://picsum.photos/seed/2/600/360" alt="Imagem 2" />
-          <img src="https://picsum.photos/seed/3/600/360" alt="Imagem 3" />
-          <img src="https://picsum.photos/seed/4/600/360" alt="Imagem 4" />
-          <img src="https://picsum.photos/seed/5/600/360" alt="Imagem 5" />
-        </div>
-        <button class="carousel-btn next" id="carouselNext" aria-label="Próximo">›</button>
-      </div>
-    </div>
+    <div class="banner-art" aria-hidden="true">📖<span>🌿</span>☕</div>
   </section>
 
   <section class="home-section">
@@ -98,42 +75,3 @@
   <button class="nav-link" data-page="learn">△<small>Aprenda</small></button>
   <button class="nav-link" data-page="notes">✎<small>Anotações</small></button>
 </nav>
-
-<!-- Modal para adicionar livros / músicas -->
-<div id="libraryModal" class="modal" aria-hidden="true">
-  <div class="modal-overlay" id="modalOverlay"></div>
-  <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-    <header class="modal-header">
-      <h2 id="modalTitle">Adicionar item</h2>
-      <button id="modalClose" class="modal-close" aria-label="Fechar">✕</button>
-    </header>
-    <form id="modalForm" class="modal-form">
-      <label>
-        Tipo
-        <select id="modalType" name="type">
-          <option value="book">Livro</option>
-          <option value="music">Música</option>
-        </select>
-      </label>
-
-      <label>
-        Título
-        <input id="modalTitleInput" name="title" type="text" required />
-      </label>
-
-      <label id="modalAuthorLabel">
-        Autor
-        <input id="modalAuthorInput" name="author" type="text" required />
-      </label>
-
-      <div class="modal-actions">
-        <button type="button" id="modalCancel" class="btn btn-muted">Cancelar</button>
-        <button type="submit" id="modalSave" class="btn btn-primary">Guardar</button>
-      </div>
-    </form>
-  </div>
-</div>
-
-<script src="../js/home.js"></script>
-</body>
-</html>
