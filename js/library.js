@@ -23,7 +23,7 @@ function renderDocuments(filter = "") {
         </div>
         <button class="primary-button" data-open="${originalIndex}">Abrir</button>
         <button data-read="${originalIndex}" title="Marcar como lido">✓</button>
-        <button data-remove="${originalIndex}" title="Remover documento">✕</button>
+        <button data-remove="${originalIndex}" title="Remover documento">Remover</button>
       </article>`;
       }).join("")
     : `<p class="page-description">A biblioteca está vazia.</p>`;
@@ -48,6 +48,8 @@ function renderDocuments(filter = "") {
       const idx = Number(button.dataset.remove);
       const name = documents[idx] ? documents[idx].name : "este documento";
       if (!confirm(`Remover "${name}" da biblioteca?`)) return;
+      // liberar object URL para evitar vazamento de memória
+      try { if (documents[idx] && documents[idx].url) URL.revokeObjectURL(documents[idx].url); } catch (e) {}
       documents.splice(idx, 1);
       localStorage.setItem("libraryDocuments", JSON.stringify(documents));
       renderDocuments(filter);
