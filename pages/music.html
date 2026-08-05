@@ -1,0 +1,19 @@
+<main class="page">
+  <header class="page-header"><div><small>LIBRARY</small><h1>Música</h1></div></header>
+  <section class="music-player">
+    <div class="album-art">♫</div>
+    <h2 id="songName">Nenhuma música</h2>
+    <p id="songMeta">Adicione uma música do dispositivo.</p>
+    <input id="musicProgress" type="range" min="0" max="100" value="0">
+    <div class="player-controls">
+      <button id="previousSong">⏮</button><button id="playSong" class="play-main">▶</button><button id="nextSong">⏭</button>
+    </div>
+    <label class="volume">Volume <input id="volume" type="range" min="0" max="1" step="0.01" value="1"></label>
+  </section>
+  <section class="page-section">
+    <label class="primary-button upload-button">＋ Adicionar música <input id="musicUpload" type="file" accept="audio/*" multiple hidden></label>
+    <div class="search-box"><input id="musicSearch" placeholder="🔎 Pesquisar música"></div>
+    <div id="musicList" class="item-list"></div>
+  </section>
+</main>
+<nav class="bottom-nav"></nav>
