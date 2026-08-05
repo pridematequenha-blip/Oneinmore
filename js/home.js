@@ -51,8 +51,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   let index = Math.floor(Math.random() * slides.length);
-  const intervalMs = 3500;
+  const intervalMs = 3500; // 3.5 segundos entre slides
   let timer = null;
+  let isAutoPlaying = true; // controle de autoplay
 
   function update() {
     track.style.transform = `translateX(-${index * 100}%)`;
@@ -63,15 +64,41 @@ document.addEventListener('DOMContentLoaded', () => {
     update();
   }
 
-  function nextSlide() { goTo(index + 1); }
-  function prevSlide() { goTo(index - 1); }
+  function nextSlide() { 
+    goTo(index + 1); 
+  }
+  
+  function prevSlide() { 
+    goTo(index - 1); 
+  }
 
-  next.addEventListener('click', () => { nextSlide(); resetTimer(); });
-  prev.addEventListener('click', () => { prevSlide(); resetTimer(); });
+  next.addEventListener('click', () => { 
+    nextSlide(); 
+    resetTimer(); 
+  });
+  
+  prev.addEventListener('click', () => { 
+    prevSlide(); 
+    resetTimer(); 
+  });
 
-  function startTimer() { stopTimer(); timer = setInterval(nextSlide, intervalMs); }
-  function stopTimer() { if (timer) { clearInterval(timer); timer = null; } }
-  function resetTimer() { stopTimer(); startTimer(); }
+  function startTimer() { 
+    if (!isAutoPlaying) return;
+    stopTimer(); 
+    timer = setInterval(nextSlide, intervalMs); 
+  }
+  
+  function stopTimer() { 
+    if (timer) { 
+      clearInterval(timer); 
+      timer = null; 
+    } 
+  }
+  
+  function resetTimer() { 
+    stopTimer(); 
+    startTimer(); 
+  }
 
   // pause on hover / focus (carousel precisa de tabindex para ser focável)
   carousel.addEventListener('mouseenter', stopTimer);
@@ -81,11 +108,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // suporte a teclado: setas esquerda/direita
   carousel.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowRight') { nextSlide(); resetTimer(); e.preventDefault(); }
-    if (e.key === 'ArrowLeft') { prevSlide(); resetTimer(); e.preventDefault(); }
+    if (e.key === 'ArrowRight') { 
+      nextSlide(); 
+      resetTimer(); 
+      e.preventDefault(); 
+    }
+    if (e.key === 'ArrowLeft') { 
+      prevSlide(); 
+      resetTimer(); 
+      e.preventDefault(); 
+    }
   });
 
   // iniciar na imagem aleatória e arranque do autoplay
   goTo(index);
   startTimer();
+  
+  // garantir que autoplay inicia quando a página fica visível novamente
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      stopTimer();
+    } else {
+      if (isAutoPlaying) {
+        startTimer();
+      }
+    }
+  });
 });
