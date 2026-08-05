@@ -1,4 +1,5 @@
-<main class="home-page">
+<!---- Home reorganizado (profissional / semântico) ---->
+<main class="home-page container" id="homePage">
   <header class="home-header">
     <h1>Início</h1>
     <div class="header-actions">
@@ -7,120 +8,117 @@
     </div>
   </header>
 
-  <section class="update-banner">
-    <div class="banner-text">
-      <h2>Aqui vai ter atualizações</h2>
-      <p>Novidades, livros e muito mais<br>em um só lugar.</p>
+  <!-- HERO / Banner -->
+  <section class="hero" aria-label="Banner de novidades">
+    <div class="hero-content">
+      <h2>Novidades e atualizações</h2>
+      <p>Novidades, livros e muito mais — tudo num único lugar.</p>
+      <div class="hero-cta">
+        <button id="newBookHome" class="btn btn-primary">Ver novidades</button>
+      </div>
     </div>
-    <!-- Substituímos os emojis por um carrossel de imagens aleatórias -->
-    <div class="banner-art">
-      <div class="carousel" id="bannerCarousel" tabindex="0" role="region" aria-label="Carrossel de imagens do banner">
-        <button class="carousel-btn prev" id="carouselPrev" aria-label="Anterior">‹</button>
-        <div class="carousel-track" id="carouselTrack">
-          <!-- imagens aleatórias via picsum.photos (seed para estabilidade entre reloads) -->
-          <img src="https://picsum.photos/seed/1/600/360" alt="Imagem 1" />
-          <img src="https://picsum.photos/seed/2/600/360" alt="Imagem 2" />
-          <img src="https://picsum.photos/seed/3/600/360" alt="Imagem 3" />
-          <img src="https://picsum.photos/seed/4/600/360" alt="Imagem 4" />
-          <img src="https://picsum.photos/seed/5/600/360" alt="Imagem 5" />
+
+    <div class="hero-media">
+      <div class="carousel" id="bannerCarousel" tabindex="0" role="region" aria-roledescription="carousel" aria-label="Imagens de destaque">
+        <div class="carousel-track" id="carouselTrack" aria-live="off">
+          <img src="https://picsum.photos/seed/1/900/540" alt="Destaque 1" />
+          <img src="https://picsum.photos/seed/2/900/540" alt="Destaque 2" />
+          <img src="https://picsum.photos/seed/3/900/540" alt="Destaque 3" />
         </div>
-        <button class="carousel-btn next" id="carouselNext" aria-label="Próximo">›</button>
+        <div class="carousel-controls">
+          <button class="carousel-btn prev" id="carouselPrev" aria-label="Anterior">‹</button>
+          <div class="carousel-indicators" id="carouselIndicators" role="tablist"></div>
+          <button class="carousel-btn next" id="carouselNext" aria-label="Próximo">›</button>
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="home-section">
-    <h2>Favoritos</h2>
-    <div class="favorites-row">
-      <button class="favorite-card">♡</button>
-      <button class="favorite-card">♡</button>
-      <button class="favorite-card">♡</button>
-    </div>
-  </section>
+  <!-- GRID PRINCIPAL -->
+  <section class="grid home-grid" aria-label="Conteúdo principal">
+    <article class="panel favorites" aria-labelledby="favTitle">
+      <h3 id="favTitle">Favoritos</h3>
+      <div class="favorites-row" id="favoritesRow">
+        <!-- preenchido por JS -->
+      </div>
+    </article>
 
-  <section class="home-section books-languages">
-    <div>
-      <h2>Livros</h2>
-      <div class="book-row">
+    <article class="panel books" aria-labelledby="booksTitle">
+      <h3 id="booksTitle">Livros</h3>
+      <div class="book-row" id="bookRow">
+        <!-- cards de livro (padrão estático ou renderizados por JS) -->
         <button class="book-card book-action" data-title="O poder da ação">
-          <span class="book-title">O poder<br>da ação</span><small>PAULO VIEIRA</small><b>◎</b>
-        </button>
-        <button class="book-card book-rich">
-          <span>PAI RICO<br>PAI POBRE</span><small>ROBERT T. KIYOSAKI</small><b>$</b>
-        </button>
-        <button class="book-card book-blue">
-          <span>O homem<br>mais rico da<br>BABILÓNIA</span><small>GEORGE S. CLASON</small><b>🏛</b>
+          <span class="book-title">O poder<br>da ação</span>
+          <small>PAULO VIEIRA</small>
+          <b class="book-icon">◎</b>
         </button>
       </div>
-    </div>
+    </article>
 
-    <div>
-      <h2>Línguas</h2>
-      <div class="language-row">
+    <aside class="panel languages" aria-labelledby="langTitle">
+      <h3 id="langTitle">Línguas</h3>
+      <div class="language-row" id="languageRow">
         <button class="language-card" data-language="Inglês"><span>🇺🇸</span><small>Inglês</small></button>
         <button class="language-card" data-language="Espanhol"><span>🇪🇸</span><small>Espanhol</small></button>
       </div>
+    </aside>
+
+    <article class="panel news" aria-labelledby="newsTitle">
+      <h3 id="newsTitle">Novidades</h3>
+      <div class="new-list">
+        <button class="new-book-card" id="newBookCard">
+          <div class="new-cover">HÁBITOS<br>ATÓMICOS</div>
+          <div class="new-info">
+            <h4>Hábitos Atómicos</h4>
+            <p class="muted">James Clear</p>
+            <p>Pequenas mudanças, resultados extraordinários.</p>
+          </div>
+          <span class="badge new-badge">Novo</span>
+        </button>
+      </div>
+    </article>
+
+    <article class="panel online" aria-labelledby="onlineTitle">
+      <h3 id="onlineTitle">Online</h3>
+      <div class="status-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+    </article>
+  </section>
+
+  <!-- NAV BOTTOM -->
+  <nav class="bottom-nav" aria-label="Navegação principal">
+    <button class="nav-link active" data-page="home" aria-current="page">⌂<small>Início</small></button>
+    <button class="nav-link" data-page="music">♫<small>Música</small></button>
+    <button class="nav-link" data-page="library">▢<small>Biblioteca</small></button>
+    <button class="nav-link" data-page="learn">△<small>Aprenda</small></button>
+    <button class="nav-link" data-page="notes">✎<small>Anotações</small></button>
+  </nav>
+
+  <!-- Modal (inalterado estruturalmente, mais acessível) -->
+  <div id="libraryModal" class="modal" aria-hidden="true">
+    <div class="modal-overlay" id="modalOverlay"></div>
+    <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <header class="modal-header">
+        <h2 id="modalTitle">Adicionar item</h2>
+        <button id="modalClose" class="modal-close" aria-label="Fechar">✕</button>
+      </header>
+      <form id="modalForm" class="modal-form">
+        <label>Tipo
+          <select id="modalType" name="type">
+            <option value="book">Livro</option>
+            <option value="music">Música</option>
+          </select>
+        </label>
+        <label>Título
+          <input id="modalTitleInput" name="title" type="text" required />
+        </label>
+        <label id="modalAuthorLabel">Autor
+          <input id="modalAuthorInput" name="author" type="text" required />
+        </label>
+        <div class="modal-actions">
+          <button type="button" id="modalCancel" class="btn btn-muted">Cancelar</button>
+          <button type="submit" id="modalSave" class="btn btn-primary">Guardar</button>
+        </div>
+      </form>
     </div>
-  </section>
-
-  <section class="home-section">
-    <h2>Novidades</h2>
-    <button class="new-book-card" id="newBookHome">
-      <div class="new-cover">HÁBITOS<br>ATÓMICOS</div>
-      <div class="new-info">
-        <h3>Hábitos Atómicos</h3>
-        <p>James Clear</p>
-        <span>Pequenas mudanças, resultados<br>extraordinários.</span>
-      </div>
-      <b class="new-badge">Novo</b>
-    </button>
-  </section>
-
-  <section class="online-status">
-    <h2>Online</h2>
-    <div class="status-dots"><i></i><i></i><i></i></div>
-  </section>
-</main>
-
-<nav class="bottom-nav">
-  <button class="nav-link active" data-page="home">⌂<small>Início</small></button>
-  <button class="nav-link" data-page="music">♫<small>Música</small></button>
-  <button class="nav-link" data-page="library">▢<small>Biblioteca</small></button>
-  <button class="nav-link" data-page="learn">△<small>Aprenda</small></button>
-  <button class="nav-link" data-page="notes">✎<small>Anotações</small></button>
-</nav>
-
-<!-- Modal para adicionar livros / músicas -->
-<div id="libraryModal" class="modal" aria-hidden="true">
-  <div class="modal-overlay" id="modalOverlay"></div>
-  <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-    <header class="modal-header">
-      <h2 id="modalTitle">Adicionar item</h2>
-      <button id="modalClose" class="modal-close" aria-label="Fechar">✕</button>
-    </header>
-    <form id="modalForm" class="modal-form">
-      <label>
-        Tipo
-        <select id="modalType" name="type">
-          <option value="book">Livro</option>
-          <option value="music">Música</option>
-        </select>
-      </label>
-
-      <label>
-        Título
-        <input id="modalTitleInput" name="title" type="text" required />
-      </label>
-
-      <label id="modalAuthorLabel">
-        Autor
-        <input id="modalAuthorInput" name="author" type="text" required />
-      </label>
-
-      <div class="modal-actions">
-        <button type="button" id="modalCancel" class="btn btn-muted">Cancelar</button>
-        <button type="submit" id="modalSave" class="btn btn-primary">Guardar</button>
-      </div>
-    </form>
   </div>
-</div>
+</main>

@@ -23,12 +23,14 @@ document.querySelectorAll(".language-card").forEach(button => {
 });
 
 document.querySelector("#newBookHome")?.addEventListener("click", () => {
-  window.loadPage("library");
+  window.loadPage?.("library");
 });
 
+// Observação: book-action buttons são renderizados dinamicamente. Se existirem no HTML
+// inicial, adicionamos behavior; caso contrário, o renderer (loadData) adiciona listeners.
 document.querySelectorAll(".book-action").forEach(button => {
   button.addEventListener("click", () => {
-    window.loadPage("library");
+    window.loadPage?.("library");
   });
 });
 
@@ -56,6 +58,12 @@ document.querySelectorAll(".book-action").forEach(button => {
       return;
     }
 
+    // Inicializar indicadores (se existir o container)
+    const indicatorsContainer = document.getElementById('carouselIndicators');
+    if (indicatorsContainer) {
+      indicatorsContainer.innerHTML = '';
+    }
+
     let index = Math.floor(Math.random() * slides.length);
     const intervalMs = 3500; // 3.5 segundos entre slides
     let timer = null;
@@ -64,6 +72,13 @@ document.querySelectorAll(".book-action").forEach(button => {
     function update() {
       // garante que a track tenha a largura dos slides (cada slide 100% do container)
       track.style.transform = `translateX(-${index * 100}%)`;
+      // atualizar indicadores
+      if (indicatorsContainer) {
+        Array.from(indicatorsContainer.children).forEach((c, i) => {
+          c.classList.toggle('active', i === index);
+          c.setAttribute('aria-selected', i === index ? 'true' : 'false');
+        });
+      }
     }
 
     function goTo(i) {
@@ -127,6 +142,20 @@ document.querySelectorAll(".book-action").forEach(button => {
       }
     });
 
+    // construir indicadores interativos
+    if (indicatorsContainer) {
+      slides.forEach((_, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'indicator';
+        btn.type = 'button';
+        btn.setAttribute('aria-label', `Slide ${i + 1}`);
+        btn.setAttribute('role', 'tab');
+        btn.setAttribute('aria-selected', 'false');
+        btn.addEventListener('click', () => { goTo(i); resetTimer(); });
+        indicatorsContainer.appendChild(btn);
+      });
+    }
+
     // iniciar na imagem aleatória e arranque do autoplay
     // small timeout to ensure layout/paint settled (helps in some browsers)
     requestAnimationFrame(() => goTo(index));
@@ -187,7 +216,7 @@ document.querySelectorAll(".book-action").forEach(button => {
       btn.className = 'book-card book-action';
       btn.dataset.index = i;
       btn.innerHTML = `<span class="book-title">${escapeHtml(b.title).replace(/\n/g,'<br>')}</span><small>${escapeHtml(b.author || '')}</small><b>◎</b>`;
-      btn.addEventListener('click', () => { window.loadPage('library'); });
+      btn.addEventListener('click', () => { window.loadPage?.('library'); });
       row.appendChild(btn);
     });
   }
@@ -322,8 +351,11 @@ document.querySelectorAll(".book-action").forEach(button => {
 
   // segurança: escapar HTML ao inserir conteúdo do utilizador
   function escapeHtml(s) {
-    return String(s).replace(/[&<>"']/g, function (m) { return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]; });
+    return String(s).replace(/[&<>\"']/g, function (m) { return ({'&':'&amp;','<':'&lt;','>':'&gt;', '"':'&quot;',"'":'&#39;'})[m]; });
   }
+
+  // Expor loadData para uso externo (por exemplo, triggers de outras partes da aplicação)
+  window.loadData = loadData;
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => { loadData(); injectFab(); });
