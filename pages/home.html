@@ -12,7 +12,76 @@
       <h2>Aqui vai ter atualizações</h2>
       <p>Novidades, livros e muito mais<br>em um só lugar.</p>
     </div>
-    <div class="banner-art" aria-hidden="true">📖<span>🌿</span>☕</div>
+    <!-- Substituímos os emojis por um carrossel de imagens aleatórias -->
+    <div class="banner-art" aria-hidden="true">
+      <div class="carousel" id="bannerCarousel" aria-hidden="true">
+        <button class="carousel-btn prev" id="carouselPrev" aria-label="Anterior">‹</button>
+        <div class="carousel-track" id="carouselTrack">
+          <!-- imagens aleatórias via picsum.photos (seed para estabilidade entre reloads) -->
+          <img src="https://picsum.photos/seed/1/600/360" alt="" />
+          <img src="https://picsum.photos/seed/2/600/360" alt="" />
+          <img src="https://picsum.photos/seed/3/600/360" alt="" />
+          <img src="https://picsum.photos/seed/4/600/360" alt="" />
+          <img src="https://picsum.photos/seed/5/600/360" alt="" />
+        </div>
+        <button class="carousel-btn next" id="carouselNext" aria-label="Próximo">›</button>
+      </div>
+    </div>
+    <style>
+      /* Estilos simples para o carrossel dentro do banner */
+      .update-banner { display:flex; align-items:center; justify-content:space-between; gap:1rem; }
+      .banner-art { width:40%; max-width:420px; min-width:260px; }
+      .carousel { position:relative; overflow:hidden; border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,0.12); }
+      .carousel-track { display:flex; transition:transform 400ms ease; }
+      .carousel-track img { width:100%; height:auto; flex:0 0 100%; object-fit:cover; display:block; }
+      .carousel-btn { position:absolute; top:50%; transform:translateY(-50%); background:rgba(255,255,255,0.8); border:0; padding:0.4rem 0.6rem; font-size:1.6rem; cursor:pointer; border-radius:6px; }
+      .carousel-btn.prev { left:8px; }
+      .carousel-btn.next { right:8px; }
+      @media (max-width:800px){ .update-banner{flex-direction:column; align-items:flex-start} .banner-art{width:100%;} }
+    </style>
+
+    <script>
+      (function(){
+        const track = document.getElementById('carouselTrack');
+        const slides = Array.from(track.querySelectorAll('img'));
+        const prev = document.getElementById('carouselPrev');
+        const next = document.getElementById('carouselNext');
+        let index = Math.floor(Math.random() * slides.length); // imagem inicial aleatória
+        let intervalMs = 3500;
+        let timer = null;
+
+        function update(){
+          track.style.transform = `translateX(-${index * 100}%)`;
+        }
+
+        function goTo(i){
+          index = (i + slides.length) % slides.length;
+          update();
+        }
+
+        function nextSlide(){ goTo(index + 1); }
+        function prevSlide(){ goTo(index - 1); }
+
+        next.addEventListener('click', () => { nextSlide(); resetTimer(); });
+        prev.addEventListener('click', () => { prevSlide(); resetTimer(); });
+
+        // autoplay
+        function startTimer(){ timer = setInterval(nextSlide, intervalMs); }
+        function stopTimer(){ if(timer){ clearInterval(timer); timer = null; } }
+        function resetTimer(){ stopTimer(); startTimer(); }
+
+        // acessibilidade: pause on focus/hover
+        const carousel = document.getElementById('bannerCarousel');
+        carousel.addEventListener('mouseenter', stopTimer);
+        carousel.addEventListener('mouseleave', startTimer);
+        carousel.addEventListener('focusin', stopTimer);
+        carousel.addEventListener('focusout', startTimer);
+
+        // iniciar na imagem aleatória
+        goTo(index);
+        startTimer();
+      })();
+    </script>
   </section>
 
   <section class="home-section">
