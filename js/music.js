@@ -8,24 +8,33 @@ const list = document.querySelector("#musicList");
 const upload = document.querySelector("#musicUpload");
 
 function renderMusicList(filter = "") {
-  const filtered = playlist.filter(song =>
+  // keep original indexes so play/remove work even when filtered
+  const indexed = playlist.map((song, idx) => ({ song, idx }));
+  const filtered = indexed.filter(({ song }) =>
     song.name.toLowerCase().includes(filter.toLowerCase())
   );
 
   list.innerHTML = filtered.length
-    ? filtered.map((song, index) => `
+    ? filtered.map(({ song, idx }) => `
       <article class="row-card">
         <div>🎵</div>
         <div class="grow">
           <strong>${escapeHTML(song.name)}</strong>
           <p>Áudio local</p>
         </div>
-        <button class="primary-button" data-play="${index}">Ouvir</button>
+        <div class="row-actions">
+          <button class="primary-button" data-play="${idx}">Ouvir</button>
+          <button class="danger-button" data-remove="${idx}" title="Remover">✖</button>
+        </div>
       </article>`).join("")
     : `<p class="page-description">Nenhuma música encontrada.</p>`;
 
   list.querySelectorAll("[data-play]").forEach(button => {
     button.onclick = () => playSong(Number(button.dataset.play));
+  });
+
+  list.querySelectorAll("[data-remove]").forEach(button => {
+    button.onclick = () => removeSong(Number(button.dataset.remove));
   });
 }
 
@@ -73,6 +82,46 @@ upload.addEventListener("change", event => {
   renderMusicList();
 });
 
+function removeSong(index) {
+  const song = playlist[index];
+  if (!song) return;
+
+  // if removing currently playing song, stop playback
+  const wasPlayingCurrent = (index === currentIndex);
+
+  // revoke blob URL if applicable
+  try {
+    if (song.url && typeof song.url === 'string' && song.url.startsWith('blob:')) {
+      URL.revokeObjectURL(song.url);
+    }
+  } catch (e) {
+    console.warn('Falha ao revogar URL do objeto:', e);
+  }
+
+  // remove from playlist
+  playlist.splice(index, 1);
+
+  // adjust currentIndex
+  if (playlist.length === 0) {
+    currentIndex = -1;
+  } else if (wasPlayingCurrent) {
+    // stop playback and reset UI
+    if (audio) {
+      audio.pause();
+      audio = null;
+    }
+    currentIndex = -1;
+    document.querySelector("#songName").textContent = "Nenhuma música";
+    document.querySelector("#songMeta").textContent = "Adicione uma música do dispositivo.";
+    document.querySelector("#playSong").textContent = "▶";
+  } else if (index < currentIndex) {
+    currentIndex -= 1; // shift left because array shrank
+  }
+
+  localStorage.setItem("libraryMusic", JSON.stringify(playlist));
+  renderMusicList();
+}
+
 document.querySelector("#playSong").onclick = () => {
   if (!audio) return;
   if (audio.paused) {
@@ -102,7 +151,7 @@ document.querySelector("#musicSearch").oninput = event => {
 };
 
 function escapeHTML(value = "") {
-  return value.replace(/[&<>"']/g, char => ({
+  return value.replace(/[&<>\"']/g, char => ({
     "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#039;"
   }[char]));
 }
