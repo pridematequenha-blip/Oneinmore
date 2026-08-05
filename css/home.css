@@ -1,1 +1,89 @@
-.update-banner{min-height:245px;border-radius:25px;background:#fff4e7;padding:45px;display:flex;align-items:center;justify-content:space-between;overflow:hidden}.banner-text h2{font-size:31px;margin-bottom:17px}.banner-text p{font-size:24px;line-height:1.45}.banner-art{font-size:75px;letter-spacing:-18px;padding-right:35px}.banner-art span{font-size:60px}.favorite-card{width:150px;height:150px;border-radius:22px;background:var(--soft);color:#c7c6c0;font-size:53px}.book-card{width:145px;height:210px;border-radius:17px;color:white;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 7px 14px rgba(0,0,0,.15);overflow:hidden}.book-card small{position:absolute;top:9px;font-size:8px;letter-spacing:.7px}.book-card span{font-size:20px;font-weight:800;text-align:center}.book-card b{font-size:43px;margin-top:13px}.book-action{background:linear-gradient(145deg,#d88a0d,#efad13)}.book-rich{background:linear-gradient(145deg,#171717,#292929)}.book-blue{background:linear-gradient(145deg,#214b70,#37698e)}.language-card{width:145px;height:150px;border-radius:22px;background:var(--soft);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:13px}.language-card span{font-size:53px}.language-card small{font-size:17px}.new-book-card{width:100%;display:flex;align-items:center;text-align:left;gap:30px;padding:0 20px 0 0;background:var(--soft);border-radius:23px;overflow:hidden}.new-cover{width:145px;height:190px;flex:0 0 auto;display:grid;place-items:center;text-align:center;background:linear-gradient(150deg,#6e7063,#c2b99c);color:white;font-weight:800;font-size:17px}.new-info{flex:1}.new-info h3{font-size:27px;margin-bottom:8px}.new-info p{font-size:19px;color:var(--muted);margin-bottom:20px}.new-info span{font-size:18px;color:var(--muted);line-height:1.5}.new-badge{padding:9px 17px;border-radius:20px;background:#dff4e1;color:#54a45f}.online-status{display:flex;align-items:center;gap:18px;margin:30px 0}.online-status h2{font-size:28px}.status-dots{display:flex;gap:15px}.status-dots i{width:20px;height:20px;border-radius:50%;background:var(--green)}.status-dots i:last-child{background:#ddd}
+/* css/home.css — estilos para a página inicial (substituído para incluir tipografia responsiva e ajustes do carrossel) */
+
+:root{
+  --accent:#ff7a59;
+  --banner-bg:#fff4e7;
+  --text:#222;
+  --muted:#666;
+}
+
+html{font-size:100%;}
+.home-page{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;line-height:1.35;color:var(--text)}
+
+.update-banner{
+  min-height:245px;
+  border-radius:25px;
+  background:var(--banner-bg);
+  padding:45px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  overflow:hidden;
+  gap:1rem;
+}
+
+.banner-text h2{font-size:31px;margin-bottom:.35rem}
+.banner-text p{margin:0;color:var(--muted)}
+
+.banner-art{width:40%;max-width:420px;min-width:260px}
+.carousel{position:relative;overflow:hidden;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,0.12);}
+.carousel-track{display:flex;transition:transform 400ms ease;will-change:transform}
+.carousel-track img{width:100%;height:auto;flex:0 0 100%;object-fit:cover;display:block}
+.carousel-btn{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.85);border:0;padding:.4rem .6rem;font-size:1.6rem;cursor:pointer;border-radius:6px}
+.carousel-btn.prev{left:8px}
+.carousel-btn.next{right:8px}
+
+/* Favoritos / Livros / Linguas */
+.home-section h2{margin:0 0 .6rem 0}
+.favorites-row{display:flex;gap:.6rem}
+.favorite-card{background:#fff;border:0;border-radius:10px;padding:.6rem 1rem;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,0.06)}
+
+.book-row{display:flex;gap:.6rem;flex-wrap:wrap}
+.book-card{background:#fff;border:0;border-radius:12px;padding:1rem;display:flex;flex-direction:column;gap:.4rem;align-items:flex-start;cursor:pointer;min-width:120px;box-shadow:0 6px 14px rgba(0,0,0,0.06)}
+.book-card .book-title{font-weight:700}
+.book-card small{opacity:.85}
+
+.language-row{display:flex;gap:.6rem}
+.language-card{background:#fff;border:0;border-radius:10px;padding:.6rem 0.9rem;display:flex;flex-direction:column;align-items:center;gap:.2rem;cursor:pointer}
+
+.new-book-card{display:flex;align-items:center;gap:1rem;background:#fff;border:0;border-radius:12px;padding:1rem;width:100%;box-shadow:0 6px 14px rgba(0,0,0,0.06);cursor:pointer}
+.new-cover{background:var(--accent);color:#fff;padding:.6rem .8rem;border-radius:8px;font-weight:800}
+.new-info h3{margin:0}
+.new-badge{background:var(--accent);color:#fff;padding:.2rem .6rem;border-radius:6px}
+
+.online-status .status-dots{display:flex;gap:.4rem}
+.status-dots i{width:10px;height:10px;border-radius:50%;background:#d8d8d8;display:inline-block}
+
+.bottom-nav{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;background:#fff;padding:.5rem 0;border-top:1px solid #eee}
+.nav-link{background:transparent;border:0;display:flex;flex-direction:column;align-items:center;gap:.1rem;padding:.2rem .4rem}
+.nav-link small{display:block}
+.nav-link.active{color:var(--accent)}
+
+/* Responsive typography para a página inicial */
+.banner-text h2{
+  font-size:clamp(1.4rem,2.2vw,2.2rem);
+  margin:0 0 .35rem 0;
+  line-height:1.05;
+}
+.banner-text p{font-size:clamp(.95rem,1.6vw,1.1rem)}
+
+.book-row .book-card .book-title,
+.book-card .book-title{font-size:clamp(.95rem,1.6vw,1.25rem);line-height:1.05}
+.book-row .book-card small,
+.language-row .language-card small{display:block;font-size:clamp(.7rem,1.1vw,.85rem);opacity:.85}
+
+.new-info h3{font-size:clamp(1rem,1.8vw,1.25rem);margin:0 0 .2rem 0}
+.new-info p,.new-info span{font-size:clamp(.85rem,1.3vw,1rem)}
+
+.favorites-row .favorite-card{font-size:clamp(.8rem,1.2vw,.95rem);padding:.5rem .8rem}
+.bottom-nav small{font-size:clamp(.6rem,.9vw,.75rem)}
+
+/* Ajustes responsivos gerais */
+@media (max-width:800px){
+  .update-banner{flex-direction:column;align-items:flex-start;padding:20px;gap:.8rem}
+  .banner-art{width:100%;min-width:0}
+}
+
+/* Small utilities */
+#libraryFab{transition:transform .12s ease}
+#libraryFab:active{transform:scale(.96)}
