@@ -12,4 +12,110 @@
 .btn-muted{background:#f3f3f3;color:#333}
 .btn-primary{background:var(--accent);color:#fff}
 @media (max-width:200px){ .modal-panel{padding:.8rem} }
-.update-banner{min-height:245px;border-radius:25px;background:#fff4e7;padding:45px;display:flex;align-items:center;justify-content:space-between;overflow:hidden}.banner-text h2{font-size:31px;margin-bottom:17px}.banner-text p{font-size:24px;line-height:1.45}.banner-art{font-size:75px;letter-spacing:-18px;padding-right:35px}.banner-art span{font-size:60px}.favorite-card{width:150px;height:150px;border-radius:22px;background:var(--soft);color:#c7c6c0;font-size:53px}.book-card{width:145px;height:210px;border-radius:17px;color:white;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 7px 14px rgba(0,0,0,.15);overflow:hidden}.book-card small{position:absolute;top:9px;font-size:8px;letter-spacing:.7px}.book-card span{font-size:20px;font-weight:800;text-align:center}.book-card b{font-size:43px;margin-top:13px}.book-action{background:linear-gradient(145deg,#d88a0d,#efad13)}.book-rich{background:linear-gradient(145deg,#171717,#292929)}.book-blue{background:linear-gradient(145deg,#214b70,#37698e)}.language-card{width:145px;height:150px;border-radius:22px;background:var(--soft);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:13px}.language-card span{font-size:53px}.language-card small{font-size:17px}.new-book-card{width:100%;display:flex;align-items:center;text-align:left;gap:30px;padding:0 20px 0 0;background:var(--soft);border-radius:23px;overflow:hidden}.new-cover{width:145px;height:190px;flex:0 0 auto;display:grid;place-items:center;text-align:center;background:linear-gradient(150deg,#6e7063,#c2b99c);color:white;font-weight:800;font-size:17px}.new-info{flex:1}.new-info h3{font-size:27px;margin-bottom:8px}.new-info p{font-size:19px;color:var(--muted);margin-bottom:20px}.new-info span{font-size:18px;color:var(--muted);line-height:1.5}.new-badge{padding:9px 17px;border-radius:20px;background:#dff4e1;color:#54a45f}.online-status{display:flex;align-items:center;gap:18px;margin:30px 0}.online-status h2{font-size:28px}.status-dots{display:flex;gap:15px}.status-dots i{width:20px;height:20px;border-radius:50%;background:var(--green)}.status-dots i:last-child{background:#ddd}
+
+/* Banner e Carrossel */
+.update-banner{
+  min-height:245px;
+  border-radius:25px;
+  background:#fff4e7;
+  padding:45px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  overflow:hidden;
+}
+
+.banner-text h2{
+  font-size:31px;
+  margin-bottom:0.5rem;
+}
+
+.banner-text p{
+  font-size:16px;
+  color:#666;
+}
+
+.banner-art{
+  flex:1;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+/* Container do carrossel */
+.carousel{
+  position:relative;
+  width:100%;
+  max-width:400px;
+  height:240px;
+  border-radius:16px;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  outline:none;
+}
+
+/* Track - contém todas as imagens */
+.carousel-track{
+  position:relative;
+  width:100%;
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:transform 0.6s ease-in-out;
+}
+
+/* Cada imagem do carrossel */
+.carousel-track img{
+  position:absolute;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:16px;
+  opacity:0;
+  transition:opacity 0.5s ease-in-out;
+}
+
+/* Imagem visível */
+.carousel-track img.active{
+  opacity:1;
+  position:relative;
+}
+
+/* Botões de navegação */
+.carousel-btn{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  background:rgba(255,255,255,0.9);
+  border:none;
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  font-size:1.5rem;
+  cursor:pointer;
+  z-index:10;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:all 0.3s ease;
+}
+
+.carousel-btn:hover{
+  background:#fff;
+  box-shadow:0 4px 12px rgba(0,0,0,0.15);
+}
+
+.carousel-btn.prev{
+  left:12px;
+}
+
+.carousel-btn.next{
+  right:12px;
+}
+
+.carousel-btn:active{
+  transform:translateY(-50%) scale(0.95);
+}
