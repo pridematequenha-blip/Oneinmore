@@ -1,5 +1,7 @@
 // HOME.JS — apenas comportamento da página inicial.
 
+const API_PREFIX = '/api'; // endpoint relativo; quando fizeres deploy podes usar proxy ou definir um URL absoluto
+
 document.querySelector("#themeToggle")?.addEventListener("click", () => {
   document.body.classList.toggle("dark");
   localStorage.setItem("libraryTheme",
@@ -150,42 +152,49 @@ document.querySelectorAll(".book-action").forEach(button => {
   }
 })();
 
-// ---------- Simples persistência local para livros e músicas (localStorage)
-// Proposta: guarda itens em localStorage para que apareçam de verdade no site.
-// Isto é uma solução cliente-only (funciona no teu navegador). Para multi-dispositivo
-// ou acesso remoto é necessário um backend (posso ajudar a adicionar um API/DB).
-
+// ---------- Persistência com API + fallback localStorage para livros e músicas
 (function libraryPersistence() {
   const BOOKS_KEY = 'myBooks';
   const MUSIC_KEY = 'myMusic';
+  let apiAvailable = false;
 
-  function read(key) {
+  async function tryApi() {
+    try {
+      const controller = new AbortController();
+      const id = setTimeout(() => controller.abort(), 2500);
+      const res = await fetch(`${API_PREFIX}/books`, { signal: controller.signal });
+      clearTimeout(id);
+      if (!res.ok) throw new Error('no');
+      apiAvailable = true;
+      return true;
+    } catch (e) {
+      apiAvailable = false;
+      return false;
+    }
+  }
+
+  function readLocal(key) {
     try { return JSON.parse(localStorage.getItem(key)) || []; } catch (e) { return []; }
   }
-  function write(key, value) { localStorage.setItem(key, JSON.stringify(value)); }
+  function writeLocal(key, value) { localStorage.setItem(key, JSON.stringify(value)); }
 
-  function renderBooks() {
+  function renderBooksFromArray(books) {
     const row = document.querySelector('.book-row');
     if (!row) return;
-    const books = read(BOOKS_KEY);
-    if (books.length === 0) return; // deixa os cartões estáticos se não houver nada salvo
-
     row.innerHTML = '';
     books.forEach((b, i) => {
       const btn = document.createElement('button');
       btn.className = 'book-card book-action';
       btn.dataset.index = i;
-      btn.innerHTML = `<span class="book-title">${escapeHtml(b.title).replace(/\n/g,'<br>')}</span><small>${escapeHtml(b.author)}</small><b>◎</b>`;
+      btn.innerHTML = `<span class="book-title">${escapeHtml(b.title).replace(/\n/g,'<br>')}</span><small>${escapeHtml(b.author || '')}</small><b>◎</b>`;
       btn.addEventListener('click', () => { window.loadPage('library'); });
       row.appendChild(btn);
     });
   }
 
-  function renderMusic() {
+  function renderMusicFromArray(music) {
     const favRow = document.querySelector('.favorites-row');
     if (!favRow) return;
-    const music = read(MUSIC_KEY);
-    if (music.length === 0) return;
     favRow.innerHTML = '';
     music.forEach((m, i) => {
       const btn = document.createElement('button');
@@ -197,30 +206,84 @@ document.querySelectorAll(".book-action").forEach(button => {
     });
   }
 
-  function addBookInteractive() {
+  async function loadData() {
+    const ok = await tryApi();
+    if (ok) {
+      try {
+        const [booksRes, musicRes] = await Promise.all([
+          fetch(`${API_PREFIX}/books`).then(r => r.json()),
+          fetch(`${API_PREFIX}/music`).then(r => r.json())
+        ]);
+        renderBooksFromArray(booksRes);
+        renderMusicFromArray(musicRes);
+        return;
+      } catch (e) {
+        // fallback to local
+      }
+    }
+    // fallback: render localStorage or leave static content
+    const localBooks = readLocal(BOOKS_KEY);
+    const localMusic = readLocal(MUSIC_KEY);
+    if (localBooks && localBooks.length) renderBooksFromArray(localBooks);
+    if (localMusic && localMusic.length) renderMusicFromArray(localMusic);
+  }
+
+  async function addBookInteractive() {
     const input = prompt('Adicionar livro (formato: Título - Autor)');
     if (!input) return;
     const parts = input.split('-').map(s => s.trim());
     if (parts.length < 2) return alert('Formato inválido — use: Título - Autor');
     const [title, author] = parts;
-    const books = read(BOOKS_KEY);
-    books.push({ title, author, addedAt: Date.now() });
-    write(BOOKS_KEY, books);
-    renderBooks();
-    alert('Livro adicionado.');
+
+    if (apiAvailable) {
+      try {
+        const res = await fetch(`${API_PREFIX}/books`, {
+          method: 'POST', headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ title, author })
+        });
+        if (res.ok) {
+          await loadData();
+          return alert('Livro adicionado (servidor).');
+        }
+      } catch (e) {
+        // continue to local
+      }
+    }
+
+    const books = readLocal(BOOKS_KEY);
+    books.unshift({ title, author, addedAt: Date.now() });
+    writeLocal(BOOKS_KEY, books);
+    renderBooksFromArray(books);
+    alert('Livro adicionado (local).');
   }
 
-  function addMusicInteractive() {
+  async function addMusicInteractive() {
     const input = prompt('Adicionar música (formato: Título - Artista)');
     if (!input) return;
     const parts = input.split('-').map(s => s.trim());
     if (parts.length < 2) return alert('Formato inválido — use: Título - Artista');
     const [title, artist] = parts;
-    const music = read(MUSIC_KEY);
-    music.push({ title, artist, addedAt: Date.now() });
-    write(MUSIC_KEY, music);
-    renderMusic();
-    alert('Música adicionada.');
+
+    if (apiAvailable) {
+      try {
+        const res = await fetch(`${API_PREFIX}/music`, {
+          method: 'POST', headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ title, artist })
+        });
+        if (res.ok) {
+          await loadData();
+          return alert('Música adicionada (servidor).');
+        }
+      } catch (e) {
+        // fallback local
+      }
+    }
+
+    const music = readLocal(MUSIC_KEY);
+    music.unshift({ title, artist, addedAt: Date.now() });
+    writeLocal(MUSIC_KEY, music);
+    renderMusicFromArray(music);
+    alert('Música adicionada (local).');
   }
 
   // pequeno botão flutuante para adicionar itens
@@ -246,11 +309,11 @@ document.querySelectorAll(".book-action").forEach(button => {
     fab.style.fontSize = '1.6rem';
     fab.setAttribute('aria-label','Adicionar item à biblioteca');
 
-    fab.addEventListener('click', () => {
+    fab.addEventListener('click', async () => {
       const choice = prompt('Adicionar: escreva "livro" ou "música"');
       if (!choice) return;
-      if (choice.toLowerCase().startsWith('l')) addBookInteractive();
-      else if (choice.toLowerCase().startsWith('m')) addMusicInteractive();
+      if (choice.toLowerCase().startsWith('l')) await addBookInteractive();
+      else if (choice.toLowerCase().startsWith('m')) await addMusicInteractive();
       else alert('Opção não reconhecida. Escreva "livro" ou "música".');
     });
 
@@ -259,12 +322,12 @@ document.querySelectorAll(".book-action").forEach(button => {
 
   // segurança: escapar HTML ao inserir conteúdo do utilizador
   function escapeHtml(s) {
-    return String(s).replace(/[&<>"']/g, function (m) { return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]; });
+    return String(s).replace(/[&<>\"']/g, function (m) { return ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'})[m]; });
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => { renderBooks(); renderMusic(); injectFab(); });
+    document.addEventListener('DOMContentLoaded', () => { loadData(); injectFab(); });
   } else {
-    renderBooks(); renderMusic(); injectFab();
+    loadData(); injectFab();
   }
 })();
