@@ -322,7 +322,7 @@ document.querySelectorAll(".book-action").forEach(button => {
 
   // segurança: escapar HTML ao inserir conteúdo do utilizador
   function escapeHtml(s) {
-    return String(s).replace(/[&<>\"']/g, function (m) { return ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'})[m]; });
+    return String(s).replace(/[&<>"']/g, function (m) { return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]; });
   }
 
   if (document.readyState === 'loading') {
