@@ -21,9 +21,11 @@ function renderDocuments(filter = "") {
           <strong>${escapeHTML(doc.name)}</strong>
           <p>${doc.read ? "✓ Lido" : "Ainda não lido"} · ${doc.type}</p>
         </div>
-        <button class="primary-button" data-open="${originalIndex}">Abrir</button>
-        <button data-read="${originalIndex}" title="Marcar como lido">✓</button>
-        <button data-remove="${originalIndex}" title="Remover documento">Remover</button>
+        <div class="actions">
+          <button class="primary-button" data-open="${originalIndex}">Abrir</button>
+          <button class="primary-button small" data-read="${originalIndex}" title="Marcar como lido">✓</button>
+          <button class="primary-button small danger" data-remove="${originalIndex}" title="Remover documento">Remover</button>
+        </div>
       </article>`;
       }).join("")
     : `<p class="page-description">A biblioteca está vazia.</p>`;
