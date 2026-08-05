@@ -13,16 +13,16 @@
       <p>Novidades, livros e muito mais<br>em um só lugar.</p>
     </div>
     <!-- Substituímos os emojis por um carrossel de imagens aleatórias -->
-    <div class="banner-art" aria-hidden="true">
-      <div class="carousel" id="bannerCarousel" aria-hidden="true">
+    <div class="banner-art">
+      <div class="carousel" id="bannerCarousel" tabindex="0" role="region" aria-label="Carrossel de imagens do banner">
         <button class="carousel-btn prev" id="carouselPrev" aria-label="Anterior">‹</button>
         <div class="carousel-track" id="carouselTrack">
           <!-- imagens aleatórias via picsum.photos (seed para estabilidade entre reloads) -->
-          <img src="https://picsum.photos/seed/1/600/360" alt="" />
-          <img src="https://picsum.photos/seed/2/600/360" alt="" />
-          <img src="https://picsum.photos/seed/3/600/360" alt="" />
-          <img src="https://picsum.photos/seed/4/600/360" alt="" />
-          <img src="https://picsum.photos/seed/5/600/360" alt="" />
+          <img src="https://picsum.photos/seed/1/600/360" alt="Imagem 1" />
+          <img src="https://picsum.photos/seed/2/600/360" alt="Imagem 2" />
+          <img src="https://picsum.photos/seed/3/600/360" alt="Imagem 3" />
+          <img src="https://picsum.photos/seed/4/600/360" alt="Imagem 4" />
+          <img src="https://picsum.photos/seed/5/600/360" alt="Imagem 5" />
         </div>
         <button class="carousel-btn next" id="carouselNext" aria-label="Próximo">›</button>
       </div>
@@ -40,48 +40,6 @@
       @media (max-width:800px){ .update-banner{flex-direction:column; align-items:flex-start} .banner-art{width:100%;} }
     </style>
 
-    <script>
-      (function(){
-        const track = document.getElementById('carouselTrack');
-        const slides = Array.from(track.querySelectorAll('img'));
-        const prev = document.getElementById('carouselPrev');
-        const next = document.getElementById('carouselNext');
-        let index = Math.floor(Math.random() * slides.length); // imagem inicial aleatória
-        let intervalMs = 3500;
-        let timer = null;
-
-        function update(){
-          track.style.transform = `translateX(-${index * 100}%)`;
-        }
-
-        function goTo(i){
-          index = (i + slides.length) % slides.length;
-          update();
-        }
-
-        function nextSlide(){ goTo(index + 1); }
-        function prevSlide(){ goTo(index - 1); }
-
-        next.addEventListener('click', () => { nextSlide(); resetTimer(); });
-        prev.addEventListener('click', () => { prevSlide(); resetTimer(); });
-
-        // autoplay
-        function startTimer(){ timer = setInterval(nextSlide, intervalMs); }
-        function stopTimer(){ if(timer){ clearInterval(timer); timer = null; } }
-        function resetTimer(){ stopTimer(); startTimer(); }
-
-        // acessibilidade: pause on focus/hover
-        const carousel = document.getElementById('bannerCarousel');
-        carousel.addEventListener('mouseenter', stopTimer);
-        carousel.addEventListener('mouseleave', startTimer);
-        carousel.addEventListener('focusin', stopTimer);
-        carousel.addEventListener('focusout', startTimer);
-
-        // iniciar na imagem aleatória
-        goTo(index);
-        startTimer();
-      })();
-    </script>
   </section>
 
   <section class="home-section">

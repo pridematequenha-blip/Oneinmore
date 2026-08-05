@@ -29,3 +29,63 @@ document.querySelectorAll(".book-action").forEach(button => {
     window.loadPage("library");
   });
 });
+
+// Inicialização do carrossel: colocada aqui para tornar o comportamento robusto e
+// garantir que corre após a DOM estar completamente carregada.
+document.addEventListener('DOMContentLoaded', () => {
+  const carousel = document.getElementById('bannerCarousel');
+  const track = document.getElementById('carouselTrack');
+  const prev = document.getElementById('carouselPrev');
+  const next = document.getElementById('carouselNext');
+
+  // segurança: se algum elemento faltante, aborta sem lançar erro
+  if (!carousel || !track || !prev || !next) {
+    console.warn('Carrossel: elemento(s) não encontrado(s). IDs esperados: bannerCarousel, carouselTrack, carouselPrev, carouselNext');
+    return;
+  }
+
+  const slides = Array.from(track.querySelectorAll('img'));
+  if (slides.length === 0) {
+    console.warn('Carrossel: sem slides (imgs) dentro de #carouselTrack');
+    return;
+  }
+
+  let index = Math.floor(Math.random() * slides.length);
+  const intervalMs = 3500;
+  let timer = null;
+
+  function update() {
+    track.style.transform = `translateX(-${index * 100}%)`;
+  }
+
+  function goTo(i) {
+    index = (i + slides.length) % slides.length;
+    update();
+  }
+
+  function nextSlide() { goTo(index + 1); }
+  function prevSlide() { goTo(index - 1); }
+
+  next.addEventListener('click', () => { nextSlide(); resetTimer(); });
+  prev.addEventListener('click', () => { prevSlide(); resetTimer(); });
+
+  function startTimer() { stopTimer(); timer = setInterval(nextSlide, intervalMs); }
+  function stopTimer() { if (timer) { clearInterval(timer); timer = null; } }
+  function resetTimer() { stopTimer(); startTimer(); }
+
+  // pause on hover / focus (carousel precisa de tabindex para ser focável)
+  carousel.addEventListener('mouseenter', stopTimer);
+  carousel.addEventListener('mouseleave', startTimer);
+  carousel.addEventListener('focusin', stopTimer);
+  carousel.addEventListener('focusout', startTimer);
+
+  // suporte a teclado: setas esquerda/direita
+  carousel.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') { nextSlide(); resetTimer(); e.preventDefault(); }
+    if (e.key === 'ArrowLeft') { prevSlide(); resetTimer(); e.preventDefault(); }
+  });
+
+  // iniciar na imagem aleatória e arranque do autoplay
+  goTo(index);
+  startTimer();
+});
