@@ -12,16 +12,20 @@ function renderDocuments(filter = "") {
   );
 
   documentList.innerHTML = filtered.length
-    ? filtered.map((doc, index) => `
+    ? filtered.map(doc => {
+        const originalIndex = documents.indexOf(doc);
+        return `
       <article class="row-card">
         <div>📄</div>
         <div class="grow">
           <strong>${escapeHTML(doc.name)}</strong>
           <p>${doc.read ? "✓ Lido" : "Ainda não lido"} · ${doc.type}</p>
         </div>
-        <button class="primary-button" data-open="${index}">Abrir</button>
-        <button data-read="${index}">✓</button>
-      </article>`).join("")
+        <button class="primary-button" data-open="${originalIndex}">Abrir</button>
+        <button data-read="${originalIndex}" title="Marcar como lido">✓</button>
+        <button data-remove="${originalIndex}" title="Remover documento">✕</button>
+      </article>`;
+      }).join("")
     : `<p class="page-description">A biblioteca está vazia.</p>`;
 
   documentList.querySelectorAll("[data-open]").forEach(button => {
@@ -34,6 +38,17 @@ function renderDocuments(filter = "") {
   documentList.querySelectorAll("[data-read]").forEach(button => {
     button.onclick = () => {
       documents[Number(button.dataset.read)].read = true;
+      localStorage.setItem("libraryDocuments", JSON.stringify(documents));
+      renderDocuments(filter);
+    };
+  });
+
+  documentList.querySelectorAll("[data-remove]").forEach(button => {
+    button.onclick = () => {
+      const idx = Number(button.dataset.remove);
+      const name = documents[idx] ? documents[idx].name : "este documento";
+      if (!confirm(`Remover "${name}" da biblioteca?`)) return;
+      documents.splice(idx, 1);
       localStorage.setItem("libraryDocuments", JSON.stringify(documents));
       renderDocuments(filter);
     };
@@ -58,7 +73,7 @@ document.querySelector("#librarySearch").oninput =
   event => renderDocuments(event.target.value);
 
 function escapeHTML(value = "") {
-  return value.replace(/[&<>"']/g, char => ({
+  return value.replace(/[&<>\"']/g, char => ({
     "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#039;"
   }[char]));
 }
